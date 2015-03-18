@@ -50,34 +50,34 @@ Auguste Kerckhoffs
 
 > Provide the relative frequency of all letters A...Z in the ciphertext.
 
-Letter | Count
------- | -----
-A      | 49  
-B      | 5   
-C      | 8   
-D      | 26  
-E      | 36  
-F      | 7   
-G      | 1   
-H      | 1   
-I      | 9   
-J      | 32  
-K      | 14  
-L      | 7   
-M      | 32  
-N      | 51  
-O      | 68  
-P      | 12  
-Q      | 10  
-R      | 36  
-S      | 30  
-T      | 8   
-U      | 18  
-V      | 0   
-W      | 57  
-X      | 37  
-Y      | 11  
-Z      | 0
+ Letter | Frequency
+:------ | ---------:
+ A      | 8.67%
+ B      | 0.88%
+ C      | 1.42%
+ D      | 4.60%
+ E      | 6.37%
+ F      | 1.24%
+ G      | 0.18%
+ H      | 0.18%
+ I      | 1.59%
+ J      | 5.66%
+ K      | 2.48%
+ L      | 1.24%
+ M      | 5.66%
+ N      | 9.03%
+ O      | 12.04%
+ P      | 2.12%
+ Q      | 1.77%
+ R      | 6.37%
+ S      | 5.31%
+ T      | 1.42%
+ U      | 3.19%
+ V      | 0.00%
+ W      | 10.09%
+ X      | 6.55%
+ Y      | 1.95%
+ Z      | 0.00%
 
 ### b
 
