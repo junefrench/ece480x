@@ -58,3 +58,15 @@ def dec(keyword, cyphertext, tokens=ascii_uppercase):
         return plain_token
     return map(dec_token, key, cyphertext)
 
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description="Encrypt or decrypt messages with Vigenere's autokey cypher.")
+    parser.add_argument('command', choices=['encrypt', 'decrypt'], help='The operation to perform')
+    parser.add_argument('keyword', help='The keyword to use for key generation')
+    parser.add_argument('text', help='The plaintext to encrypt or cyphertext to decrypt')
+    args = parser.parse_args()
+
+    if args.command == 'encrypt':
+        print(''.join(enc(args.keyword.upper(), args.text.upper())))
+    elif args.command == 'decrypt':
+        print(''.join(dec(args.keyword.upper(), args.text.upper())))
