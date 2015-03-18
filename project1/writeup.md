@@ -10,7 +10,7 @@ John French
 
 > Perform an attack against the cipher using one of the attacks discussed in class. What is the key? What is the plaintext?
 
-The decryption key is -6 (the number of letters to shift to decrypt the text; the encryption key would be 6) and the plaintext is `THEENEMYKNOWSTHESYSTEM`.
+The decryption key is -6 (the number of letters to shift to decrypt the text; the encryption key would be 6) and the plaintext is `theenemyknowsthesystem`.
 
 The file `shiftcrack.py` contains a script which will decrypt a shift-cypher-encrypted text, either by guessing the shift from character frequencies or from a given shift.
 
@@ -21,6 +21,7 @@ The file `shiftcrack.py` contains a script which will decrypt a shift-cypher-enc
 Auguste Kerckhoffs
 
 ## 2
+
 > The ciphertext printed below was encrypted using a substitution cipher. The objective is to decrypt the ciphertext without knowledge of the key.
 >
 > ```
@@ -85,26 +86,26 @@ Auguste Kerckhoffs
 
 The file `subscrack.py` contains a script which will interactively help to decypher text encrypted with a substitution cypher. Using this script I got the following plaintext:
 ```
-TWO ROADS DIVERGED IN A YELLOW WOOD
-AND SORRY I COULD NOT TRAVEL BOTH
-AND BE ONE TRAVELER LONG I STOOD
-AND LOOKED DOWN ONE AS FAR AS I COULD
-TO WHERE IT BENT IN THE UNDERGROWTH
-THEN TOOK THE OTHER AS JUST AS FAIR
-AND HAVING PERHAPS THE BETTER CLAIM
-BECAUSE IT WAS GRASSY AND WANTED WEAR
-THOUGH AS FOR THAT THE PASSING THERE
-HAD WORN THEM REALLY ABOUT THE SAME
-AND BOTH THAT MORNING EQUALLY LAY
-IN LEAVES NO STEP HAD TRODDEN BLACK
-OH I KEPT THE FIRST FOR ANOTHER DAY
-YET KNOWING HOW WAY LEADS ON TO WAY
-I DOUBTED IF I SHOULD EVER COME BACK
-I SHALL BE TELLING THIS WITH A SIGH
-SOMEWHERE AGES AND AGES HENCE
-TWO ROADS DIVERGED IN A WOOD AND I
-I TOOK THE ONE LESS TRAVELED BY
-AND THAT HAS MADE ALL THE DIFFERENCE
+two roads diverged in a yellow wood
+and sorry i could not travel both
+and be one traveler long i stood
+and looked down one as far as i could
+to where it bent in the undergrowth
+then took the other as just as fair
+and having perhaps the better claim
+because it was grassy and wanted wear
+though as for that the passing there
+had worn them really about the same
+and both that morning equally lay
+in leaves no step had trodden black
+oh i kept the first for another day
+yet knowing how way leads on to way
+i doubted if i should ever come back
+i shall be telling this with a sigh
+somewhere ages and ages hence
+two roads diverged in a wood and i
+i took the one less traveled by
+and that has made all the difference
 ```
 
 ### c
@@ -112,3 +113,52 @@ AND THAT HAS MADE ALL THE DIFFERENCE
 > Who wrote the text?
 
 Robert Frost
+
+## 3
+
+> Vigen&egrave;re proposed a stronger cipher than the Vigen&egrave;re cipher. This cipher is an autokey cipher, where the plaintext istself is used as key. It works by starting with a keyword, and using plaintext characters after that.
+
+### a
+
+> Check the example:
+> ```
+> Plaintext:  lehrundkunst
+> Key:        wpihtpyncbxw
+> Ciphertext: HTPYNCBXWOPP
+
+The keyword is `wpi`. `./autokey.py encrypt wpi lehrundkunst` outputs `HTPYNCBXWOPP` and `./autokey.py decrypt wpi HTPYNCBXWOPP` outputs `lehrundkunst`. It checks out.
+
+### b
+
+> Provide a formal definition of the `Gen`, `Enc`, and `Dec` algorithms for this cipher. Make sure to include the equation that defines the encryption and decryption operations.
+
+TODO
+
+### c
+
+> Provide an implementation of this cipher.
+
+My implementation can be found in `autokey.py`.
+
+### d
+
+> Decrypt the following ciphertext using the key `plato`: `CZHNANBABUNTBZWSYMJWTMWZUDIJBMCQV`
+
+Using my implementation I got `nohumanthingisofseriousimportance`.
+
+## 4
+
+> Another autokey cipher by Vigen&egrave;re uses the letters of the ciphertext instead of the plaintext to form new key letters.
+
+### a
+
+> Show that this is a much weaker cipher than the other: Explain a brute force attack that can recover most of the plaintext quickly.
+
+Most of the key will be known to an attacker because most of the key is just the cyphertext. It is possible to simply try different offsets for the cyphertext (corresponding to different lengths of the keyword). The key is effectively just the length of the keyword, with the contents of the keyword only affecting the first few characters of the cyphertext.
+
+### b
+
+> Decrypt the following ciphertext that has been encrypted with the above method (It is ok to miss the first few letters): `NEASJFINVCMMZJPQKSQXIKXJBZXLXO`
+
+Using the script in `autokey2crack.py` I got the following plaintext: `?????sendthemoneythisafternoon`
+
