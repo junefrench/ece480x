@@ -69,4 +69,4 @@ if __name__ == '__main__':
     if args.command == 'encrypt':
         print(''.join(enc(args.keyword.upper(), args.text.upper())))
     elif args.command == 'decrypt':
-        print(''.join(dec(args.keyword.upper(), args.text.upper())))
+        print(''.join(dec(args.keyword.upper(), args.text.upper())).lower())
