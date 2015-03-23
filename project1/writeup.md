@@ -132,7 +132,18 @@ The keyword is `wpi`. `./autokey.py encrypt wpi lehrundkunst` outputs `HTPYNCBXW
 
 > Provide a formal definition of the `Gen`, `Enc`, and `Dec` algorithms for this cipher. Make sure to include the equation that defines the encryption and decryption operations.
 
-TODO
+For the `Gen` algorithm, `i` is the index into the key, `kw` is the keyword, and `c` is the cyphertext.
+
+For the `Enc` and `Dec` algorithms, `k` is the key (output of Gen), `p` is the plaintext, and `c` is the cyphertext.
+
+```
+Gen(i, kw, c) = { kw[i]          if i <= len(kw) }
+                { c[i - len(kw)] if i > len(kw)  }
+
+Enc(k, p) = (p + k) % 26
+
+Dec(k, c) = (c - k) % 26
+```
 
 ### c
 
