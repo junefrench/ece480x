@@ -38,6 +38,8 @@ def gen(token_bits = 5, degree=6, initial_vector=0b111111, coefficients=0b000011
         initial_vector: an integer, the bits of which comprise the initial values of each term in the LFSR (the LSB will be the first bit yielded)
         coefficients: an integer, the bits of which comprise the coefficients of each term (where the LSB is the constant term)
 
+    In other words, the feedback to the LFSR is computed as the XOR of all of the bits in ((vector << 1) | 1) & coefficients.
+
     Returns: a generator which yields ints corresponding to the tokens of the keystream
     """
     from gmpy import popcount
