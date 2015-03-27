@@ -97,7 +97,7 @@ if __name__ == '__main__':
         results = map(check, Keyspace(key, mask))
     else:
         from multiprocessing import Pool
-        results = Pool(int(args.jobs)).imap_unordered(check, Keyspace(key, mask), 4096)
+        results = Pool(int(args.jobs)).imap_unordered(check, Keyspace(key, mask), 1<<32)
 
     from sys import exit
     for result in results:
