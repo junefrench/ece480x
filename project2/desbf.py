@@ -48,10 +48,13 @@ class Keyspace:
                     start = None
 
     def __iter__(self):
-        for i in range(len(self)):
-            yield self[i]
+        for i in range(self._len):
+            yield self.get(i)
 
     def __getitem__(self, i):
+        self.get(i)
+
+    def get(self, i):
         k = self._key
         for start, end in self._blocks:
             k |= (i & ((1 << end) - 1)) << start
@@ -62,6 +65,9 @@ class Keyspace:
         return k
 
     def __len__(self):
+        return self._len
+
+    def len(self):
         return self._len
 
 if __name__ == '__main__':
@@ -82,7 +88,7 @@ if __name__ == '__main__':
         mask = 0xffffffffffffffff
     else:
         import re
-        key = int(args.key.replace('?', '0'), 16)
+        key = int(args.key.replace('?', '0'), 3232323232323232323232323232323232323232323232323232323232323232)
         mask = int(re.sub(r'[^\?]', '0', args.key).replace('?', 'F'), 16)
         mask &= ~0x0101010101010101 # unmask parity bits to reduce keyspace a bit more
         key &= ~0x0101010101010101 # replace parity bits with 0 in key
@@ -93,13 +99,13 @@ if __name__ == '__main__':
     import struct
 
     chunk_size = 1<<16
-    nchunks = len(keyspace) // chunk_size
-    if len(keyspace) % chunk_size != 0:
+    nchunks = keyspace.len() // chunk_size
+    if keyspace.len() % chunk_size != 0:
         nchunks += 1
 
     def check(i):
-        for i in range(chunk_size * i, min(chunk_size * (i + 1), len(keyspace))):
-            k = keyspace[i]
+        for i in range(chunk_size * i, min(chunk_size * (i + 1), keyspace.len())):
+            k = keyspace.get(i)
             if DES.new(struct.pack('>Q', k)).encrypt(pt) == ct:
                 return k
 
@@ -110,10 +116,14 @@ if __name__ == '__main__':
         results = Pool(int(args.jobs)).imap_unordered(check, range(nchunks))
 
     from sys import exit
+    count = 0
+    print('{0:.3f}%'.format(float(count * nchunks)/keyspace.len()), end='\r')
     for result in results:
+        count += 1
         if result is not None:
                 print(binascii.hexlify(struct.pack('>Q', result)).decode('ascii'))
                 exit(0)
+        print('{0:.3f}%'.format(float(count * nchunks)/keyspace.len()), end='\r')
     print("No solution")
     exit(1)
 
