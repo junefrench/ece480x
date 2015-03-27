@@ -5,7 +5,8 @@ John French
 ## 1
 
 > Problem 2.11 from the book.
->> We want to perform an attack on another LFSR-based stream cipher. In order to process letters, each of the 26 uppercase letters and the numbers 0, 1, 2, 3, 4, 5 are represented by a 5-bit vector according to the following mapping:
+>> We want to perform an attack on another LFSR-based stream cipher.
+>> In order to process letters, each of the 26 uppercase letters and the numbers 0, 1, 2, 3, 4, 5 are represented by a 5-bit vector according to the following mapping:
 >>
 >> ```
 >> A <-> 0  = 0b00000
@@ -74,7 +75,8 @@ The polynomial is therefore `0&x[0] ^ 0&x[1] ^ 0&x[2] ^ 0&x[3] ^ 1&x[4] ^ 1&x[5]
 
 >> Write a program in your favorite programming language which generates the whole sequence, and find the whole plaintext.
 
-The program can be found in `lfsr.py`. The plaintext is `wpiwombat`.
+The program can be found in `lfsr.py`.
+The plaintext is `wpiwombat`.
 
 ### d
 
@@ -87,3 +89,30 @@ Australia
 >> What type of attack did we perform?
 
 A known-plaintext attack
+
+## 2
+
+> Problem 3.6 from the book.
+>> An avalanche effect is also desirable for the key: A one-bit change in a key should result in a dramatically different ciphertext if the plaintext is unchanged.
+
+### a
+
+>> Assume an encryption with a given key.
+>> Now assume the key bit at position 1 is being flipped.
+>> Which S-boxes in which rounds are affected by the bit flip during DES encryption?
+
+TODO
+
+### b
+
+>> Which S-boxes in which rounds are affected by this bit flip during DES decryption?
+
+TODO
+
+## 3
+
+TODO
+
+## 4
+
+
