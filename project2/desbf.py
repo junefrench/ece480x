@@ -87,23 +87,33 @@ if __name__ == '__main__':
         mask &= ~0x0101010101010101 # unmask parity bits to reduce keyspace a bit more
         key &= ~0x0101010101010101 # replace parity bits with 0 in key
 
+    keyspace = Keyspace(key, mask)
+
     from Crypto.Cipher import DES
     import struct
-    def check(k):
-        if DES.new(struct.pack('>Q', k)).encrypt(pt) == ct:
-            return k
+
+    chunk_size = 1<<16
+    nchunks = len(keyspace) // chunk_size
+    if len(keyspace) % chunk_size != 0:
+        nchunks += 1
+
+    def check(i):
+        for i in range(chunk_size * i, min(chunk_size * (i + 1), len(keyspace))):
+            k = keyspace[i]
+            if DES.new(struct.pack('>Q', k)).encrypt(pt) == ct:
+                return k
 
     if args.jobs is None:
-        results = map(check, Keyspace(key, mask))
+        results = map(check, range(nchunks))
     else:
         from multiprocessing import Pool
-        results = Pool(int(args.jobs)).imap_unordered(check, Keyspace(key, mask), 1<<32)
+        results = Pool(int(args.jobs)).imap_unordered(check, range(nchunks))
 
     from sys import exit
     for result in results:
         if result is not None:
-            print(binascii.hexlify(struct.pack('>Q', result)).decode('ascii'))
-            exit(0)
+                print(binascii.hexlify(struct.pack('>Q', result)).decode('ascii'))
+                exit(0)
     print("No solution")
     exit(1)
 
