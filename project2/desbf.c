@@ -147,16 +147,14 @@ int main(int argc, char **argv)
 
 	m &= ~0x0101010101010101ULL;
 
-	pt = hton64(pt);
 //	printf("pt: %016llx\n", pt);
-	ct = hton64(ct);
 //	printf("ct: %016llx\n", ct);
-	k = hton64(k);
 //	printf("k:  %016llx\n", k);
-	m = hton64(m);
 //	printf("m:  %016llx\n", m);
-
 	keyspace_t *ksp = ksp_init(k, m);
+
+	pt = hton64(pt);
+	ct = hton64(ct);
 
 	uint64_t max = ksp_max(ksp);
 	uint64_t gct;
@@ -164,10 +162,10 @@ int main(int argc, char **argv)
 	DES_cblock *gctb = (DES_cblock *) &gct;
 	DES_cblock *ctb = (DES_cblock *) &ct;
 	for(uint64_t i = 0; i <= max; i++) {
-		uint64_t k = ksp_get(ksp, i);
-//		printf("kg: %016llx\n", k);
+		uint64_t kg = hton64(ksp_get(ksp, i));
+//		printf("kg: %016llx\n", kg);
 
-		DES_cblock *kb = (DES_cblock *) &k;
+		DES_cblock *kb = (DES_cblock *) &kg;
 
 		DES_key_schedule keysched;
 		DES_set_key(kb, &keysched);
@@ -176,7 +174,7 @@ int main(int argc, char **argv)
 //		printf("gct:%016llx\n", gct);
 
 		if(ct == gct){
-			printf("%016llx\n", ntohll(k));
+			printf("%016llx\n", ntoh64(kg));
 			return 0;
 		}
 	}
