@@ -61,11 +61,15 @@ void ksp_free(keyspace_t *ksp)
 	free(ksp);
 }
 
-uint64_t ksp_len(keyspace_t *ksp)
+uint64_t ksp_max(keyspace_t *ksp)
 {
 	uint32_t *maskp = (uint32_t *) &ksp->mask;
 	size_t popcount = __builtin_popcount(maskp[0]) + __builtin_popcount(maskp[1]);
-	return 1ULL<<popcount;
+	if(popcount == 64) {
+		return ~0ULL;
+	} else {
+		return (1ULL<<popcount) - 1;
+	}
 }
 
 uint64_t ksp_get(keyspace_t *ksp, size_t i)
@@ -114,27 +118,31 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "Usage: %s plaintext cyphertext [key mask], where all arguments are hex-encoded 64-bit values\n", argv[0]);
 		return 1;
 	}
+
+	m &= ~0x0101010101010101ULL;
+
 	keyspace_t *ksp = ksp_init(k, m);
 
-	uint64_t len = ksp_len(ksp);
-	for(uint64_t i = 0; i < len; i++) {
+	uint64_t max = ksp_max(ksp);
+	DES_cblock ptb = {pt >> 56, pt >> 48, pt >> 40, pt >> 32, pt >> 24, pt >> 16, pt >> 8, pt};
+	DES_cblock ctb = {};
+	DES_cblock ct_reversed = {ct >> 56, ct >> 48, ct >> 40, ct >> 32, ct >> 24, ct >> 16, ct >> 8, ct};
+	for(uint64_t i = 0; i <= max; i++) {
 		uint64_t k = ksp_get(ksp, i);
 
-		DES_cblock kb = {k, k >> 8, k >> 16, k >> 24, k >> 32, k >> 40, k >> 48, k >> 56};
-		DES_cblock ptb = {pt, pt >> 8, pt >> 16, pt >> 24, pt >> 32, pt >> 40, pt >> 48, pt >> 56};
-		DES_cblock ctb = {};
+		DES_cblock kb = {k >> 56, k >> 48, k >> 40, k >> 32, k >> 24, k >> 16, k >> 8, k};
 
 		DES_key_schedule keysched;
 		DES_set_key(&kb, &keysched);
 		DES_ecb_encrypt(&ptb, &ctb, &keysched, DES_ENCRYPT);
 
-		if(*((uint64_t *) ctb) == ct){
-			printf("%llx\n", k);
+		if(*((uint64_t *) ctb) == *((uint64_t *) ct_reversed)){
+			printf("%016llx\n", k);
 			return 0;
 		}
 	}
 
-	fprintf(stderr, "No solution");
+	fprintf(stderr, "No solution\n");
 	return 1;
 }
 
