@@ -57,7 +57,7 @@ class Keyspace:
     def get(self, i):
         k = self._key
         for start, end in self._blocks:
-            k |= (i & ((1 << end) - 1)) << start
+            k |= (i & ((1 << (end - start)) - 1)) << start
             i >>= end - start
         #import binascii
         #import struct
