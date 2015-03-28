@@ -2,7 +2,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <openssl/des.h>
-
+#ifdef __APPLE__
+#define bswap_8(x) ((x) & 0xff)
+#define bswap_16(x) ((bswap_8(x)<<8)|(bswap_8((x)>>8)))
+#define bswap_32(x) ((bswap_16(x)<<16)|(bswap_16((x)>>16)))
+#define bswap_64(x) ((bswap_32(x)<<32)|(bswap_32((x)>>32)))
+#else
+#include <byteswap.h>
+#endif
 typedef struct {
 	uint64_t key; // data of partial key
 	uint64_t mask; // mask for bits which are unknown in key
@@ -72,14 +79,14 @@ uint64_t ksp_max(keyspace_t *ksp)
 	}
 }
 
-uint64_t ksp_get(keyspace_t *ksp, size_t i)
+uint64_t ksp_get(keyspace_t *ksp, uint64_t i)
 {
 	uint64_t key = ksp->key;
-	for(int j = 0; j < ksp->blockc; j++) {
+	for(size_t j = 0; j < ksp->blockc; j++) {
 		size_t start = ksp->blocks[j * 2];
 		size_t end = ksp->blocks[j * 2 + 1];
-		key |= (i & ((1ULL << end) - 1ULL)) << start;
-		i >>= end - start;
+		key |= (i & ((1ULL << (end - start)) - 1ULL)) << start;
+		i >>= (end - start);
 	}
 	return key;
 }
@@ -102,7 +109,26 @@ uint64_t parsehex(char *str)
 	return v;
 }
 
-int main(int argc, char **argv) {
+uint64_t ntoh64(uint64_t h)
+{
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+	return bswap_64(h);
+#else
+	return h;
+#endif
+}
+
+uint64_t hton64(uint64_t h)
+{
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+	return bswap_64(h);
+#else
+	return h;
+#endif
+}
+
+int main(int argc, char **argv)
+{
 	uint64_t pt, ct, k, m;
 	if(argc == 3) {
 		pt = parsehex(argv[1]);
@@ -121,23 +147,36 @@ int main(int argc, char **argv) {
 
 	m &= ~0x0101010101010101ULL;
 
+	pt = hton64(pt);
+//	printf("pt: %016llx\n", pt);
+	ct = hton64(ct);
+//	printf("ct: %016llx\n", ct);
+	k = hton64(k);
+//	printf("k:  %016llx\n", k);
+	m = hton64(m);
+//	printf("m:  %016llx\n", m);
+
 	keyspace_t *ksp = ksp_init(k, m);
 
 	uint64_t max = ksp_max(ksp);
-	DES_cblock ptb = {pt >> 56, pt >> 48, pt >> 40, pt >> 32, pt >> 24, pt >> 16, pt >> 8, pt};
-	DES_cblock ctb = {};
-	DES_cblock ct_reversed = {ct >> 56, ct >> 48, ct >> 40, ct >> 32, ct >> 24, ct >> 16, ct >> 8, ct};
+	uint64_t gct;
+	DES_cblock *ptb = (DES_cblock *) &pt;
+	DES_cblock *gctb = (DES_cblock *) &gct;
+	DES_cblock *ctb = (DES_cblock *) &ct;
 	for(uint64_t i = 0; i <= max; i++) {
 		uint64_t k = ksp_get(ksp, i);
+//		printf("kg: %016llx\n", k);
 
-		DES_cblock kb = {k >> 56, k >> 48, k >> 40, k >> 32, k >> 24, k >> 16, k >> 8, k};
+		DES_cblock *kb = (DES_cblock *) &k;
 
 		DES_key_schedule keysched;
-		DES_set_key(&kb, &keysched);
-		DES_ecb_encrypt(&ptb, &ctb, &keysched, DES_ENCRYPT);
+		DES_set_key(kb, &keysched);
+		DES_ecb_encrypt(ptb, gctb, &keysched, DES_ENCRYPT);
 
-		if(*((uint64_t *) ctb) == *((uint64_t *) ct_reversed)){
-			printf("%016llx\n", k);
+//		printf("gct:%016llx\n", gct);
+
+		if(ct == gct){
+			printf("%016llx\n", ntohll(k));
 			return 0;
 		}
 	}
