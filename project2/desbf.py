@@ -115,15 +115,18 @@ if __name__ == '__main__':
         from multiprocessing import Pool
         results = Pool(int(args.jobs)).imap_unordered(check, range(nchunks))
 
+    def print_percent(p):
+        print('{0:.3f}%'.format(p), end='\r')
+
     from sys import exit
     count = 0
-    print('{0:.3f}%'.format(float(count * nchunks)/keyspace.len()), end='\r')
+    print_percent(0.0)
     for result in results:
         count += 1
         if result is not None:
                 print(binascii.hexlify(struct.pack('>Q', result)).decode('ascii'))
                 exit(0)
-        print('{0:.3f}%'.format(float(100 * count * nchunks)/keyspace.len()), end='\r')
+        print_percent(float(100 * count * chunk_size)/keyspace.len())
     print("No solution")
     exit(1)
 
