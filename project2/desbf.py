@@ -88,7 +88,7 @@ if __name__ == '__main__':
         mask = 0xffffffffffffffff
     else:
         import re
-        key = int(args.key.replace('?', '0'), 3232323232323232323232323232323232323232323232323232323232323232)
+        key = int(args.key.replace('?', '0'), 16)
         mask = int(re.sub(r'[^\?]', '0', args.key).replace('?', 'F'), 16)
         mask &= ~0x0101010101010101 # unmask parity bits to reduce keyspace a bit more
         key &= ~0x0101010101010101 # replace parity bits with 0 in key
@@ -123,7 +123,7 @@ if __name__ == '__main__':
         if result is not None:
                 print(binascii.hexlify(struct.pack('>Q', result)).decode('ascii'))
                 exit(0)
-        print('{0:.3f}%'.format(float(count * nchunks)/keyspace.len()), end='\r')
+        print('{0:.3f}%'.format(float(100 * count * nchunks)/keyspace.len()), end='\r')
     print("No solution")
     exit(1)
 
