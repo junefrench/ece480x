@@ -154,13 +154,11 @@ void *check_thread(void *arg)
 		}
 		start = args->nblk;
 		if(max - start <= SEARCH_BLOCK_SIZE) {
-			printf("Last block\n");
 			end = max;
 		} else {
 			end = start + SEARCH_BLOCK_SIZE;
 		}
 		args->nblk = end;
-//		printf("Starting task from %lu to %lu\n", start, end);
 		pthread_mutex_unlock(&args->mtx);
 		
 		keyspace_t *ksp = args->ksp;
@@ -169,7 +167,6 @@ void *check_thread(void *arg)
 		DES_cblock *ctb = (DES_cblock *) &ct;
 		for(uint64_t i = start; i <= end; i++) {
 			uint64_t kg = hton64(ksp_get(ksp, i));
-	//		printf("kg: %016llx\n", kg);
 
 			DES_cblock *kb = (DES_cblock *) &kg;
 
@@ -245,7 +242,7 @@ int main(int argc, char **argv)
 	for(int i = 0; i < nt; i++) {
 		pthread_join(threads[i], NULL);
 	}
-	fprintf(stderr, "No solution");
+	fprintf(stderr, "No solution\n");
 	return 1;
 }
 
