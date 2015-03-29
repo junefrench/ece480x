@@ -5,8 +5,7 @@ John French
 ## 1
 
 > Problem 2.11 from the book.
->> We want to perform an attack on another LFSR-based stream cipher.
->> In order to process letters, each of the 26 uppercase letters and the numbers 0, 1, 2, 3, 4, 5 are represented by a 5-bit vector according to the following mapping:
+>> We want to perform an attack on another LFSR-based stream cipher. In order to process letters, each of the 26 uppercase letters and the numbers 0, 1, 2, 3, 4, 5 are represented by a 5-bit vector according to the following mapping:
 >>
 >> ```
 >> A <-> 0  = 0b00000
@@ -58,25 +57,15 @@ t = 7: 010000 -> 0
 t = 8: 001000 -> ?
 ```
 
-One bit changes in the input each tick from `t = 1` to `t = 4`.
-The bit which changes for each tick `t` is the bit `x[t - 1]`.
-Because the feedback bit does not change for any of these steps we know that `x[0]` through `x[3]` all have coefficients of 0.
-On `t = 5` the bit `x[4]` changes, as does the feedback, so this bit has a coefficient of 1.
-On `t = 6` the bits `x[0]` and `x[5]` both change, as does the feedback.
-We already know that `x[0]` has a coefficient of 0 so `x[5]` must have a coefficient of 1.
-On `t = 7` the bits `x[0]` and `x[1]` change, and the feedback does not, as expected (since we know they both have coefficients of 0).
+One bit changes in the input each tick from `t = 1` to `t = 4`. The bit which changes for each tick `t` is the bit `x[t - 1]`. Because the feedback bit does not change for any of these steps we know that `x[0]` through `x[3]` all have coefficients of 0. On `t = 5` the bit `x[4]` changes, as does the feedback, so this bit has a coefficient of 1. On `t = 6` the bits `x[0]` and `x[5]` both change, as does the feedback. We already know that `x[0]` has a coefficient of 0 so `x[5]` must have a coefficient of 1. On `t = 7` the bits `x[0]` and `x[1]` change, and the feedback does not, as expected (since we know they both have coefficients of 0).
 
-Now we know the coefficients of each bit, but we still need the constant.
-When all bits are 1, the output is 0 (at `t = 0`).
-There are two bits with coefficients of 1, so the feedback will be 0 if the constant term is 0.
-The polynomial is therefore `0&x[0] ^ 0&x[1] ^ 0&x[2] ^ 0&x[3] ^ 1&x[4] ^ 1&x[5] ^ 0`.
+Now we know the coefficients of each bit, but we still need the constant. When all bits are 1, the output is 0 (at `t = 0`). There are two bits with coefficients of 1, so the feedback will be 0 if the constant term is 0. The polynomial is therefore `0&x[0] ^ 0&x[1] ^ 0&x[2] ^ 0&x[3] ^ 1&x[4] ^ 1&x[5] ^ 0`.
 
 ### c
 
 >> Write a program in your favorite programming language which generates the whole sequence, and find the whole plaintext.
 
-The program can be found in `lfsr.py`.
-The plaintext is `wpiwombat`.
+The program can be found in `lfsr.py`. The plaintext is `wpiwombat`.
 
 ### d
 
@@ -97,9 +86,7 @@ A known-plaintext attack
 
 ### a
 
->> Assume an encryption with a given key.
->> Now assume the key bit at position 1 is being flipped.
->> Which S-boxes in which rounds are affected by the bit flip during DES encryption?
+>> Assume an encryption with a given key. Now assume the key bit at position 1 is being flipped. Which S-boxes in which rounds are affected by the bit flip during DES encryption?
 
 TODO
 
@@ -115,38 +102,28 @@ TODO
 
 ## 4
 
-> Implement an exhaustive key search for DES.
-> Recover the key for the following plaintext-ciphertext pair (both given in hex notation):
+> Implement an exhaustive key search for DES. Recover the key for the following plaintext-ciphertext pair (both given in hex notation):
 >
 > ```
 > pt = 48656c6c6f212121
 > ct = 1f6339383e8da6c4
 > ```
+> 
 > Please turn in your working code together with the correct 64-bit representation of the key.
 >
-> Note: while the key space of DES is way too small by now, it is still too large to be searched in reasonable time on a simple desktop PC.
-> In order to facilitate the search, the first four bytes of the 64-bit key have been fixed to 0.
-> i.e. the 64-bit key looks like this (in hex representation): `00000000XXXXXXXX`.
+> Note: while the key space of DES is way too small by now, it is still too large to be searched in reasonable time on a simple desktop PC. In order to facilitate the search, the first four bytes of the 64-bit key have been fixed to 0. i.e. the 64-bit key looks like this (in hex representation): `00000000XXXXXXXX`.
 
-A python implementation is in `desbf.py`.
-I ran it thus: `./desbf.py 48656c6c6f212121 1f6339383e8da6c4 -k "00000000c0??????" -j 4`.
-This produced the result `00000000c0feee22`, or, taking into account parity bits, `00000000c0ffee22`.
+A python implementation is in `desbf.py`. I ran it thus: `./desbf.py 48656c6c6f212121 1f6339383e8da6c4 -k "00000000????????" -j 24`. This produced the result `00000000c0feee22`, or, taking into account parity bits, `00000000c0ffee22`.
 
 ## Bonus
 
 > Recover the DES key for the following plaintext-ciphertext pair (both given in hex notation):
 >
-> '''
+> ```
 > pt = 48656c6c6f212121
 > ct = ddb92846141922b8
-> '''
+> ```
 >
-> The key starts with zeros, just as the one before (but less).
-> Please turn in your working code together with the correct 64-bit representation of the key and the runtime needed.
+> The key starts with zeros, just as the one before (but less). Please turn in your working code together with the correct 64-bit representation of the key and the runtime needed.
 
-The key is `00000ceaf4c0feee` (or, flipping some parity bits to make more sense, `00000deaf4c0ffee`).
-The code used is in `desbf.c`.
-It implements basically the same algorithm as the python version from problem 4, but is much faster.
-Build with `./make.sh`.
-The command I used was `./desbf 48656c6c6f212121 ddb92846141922b8 24`.
-It took just under an hour and a half with 24 threads on `fourbanger.wpi.edu`.
+The key is `00000ceaf4c0feee` (or, flipping some parity bits to make more sense, `00000deaf4c0ffee`). The code used is in `desbf.c`. It implements basically the same algorithm as the python version from problem 4, but is much faster. Build with `./make.sh`. The command I used was `./desbf 48656c6c6f212121 ddb92846141922b8 24`. It took just under an hour and a half with 24 threads on `fourbanger.wpi.edu`.
