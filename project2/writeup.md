@@ -115,4 +115,38 @@ TODO
 
 ## 4
 
+> Implement an exhaustive key search for DES.
+> Recover the key for the following plaintext-ciphertext pair (both given in hex notation):
+>
+> ```
+> pt = 48656c6c6f212121
+> ct = 1f6339383e8da6c4
+> ```
+> Please turn in your working code together with the correct 64-bit representation of the key.
+>
+> Note: while the key space of DES is way too small by now, it is still too large to be searched in reasonable time on a simple desktop PC.
+> In order to facilitate the search, the first four bytes of the 64-bit key have been fixed to 0.
+> i.e. the 64-bit key looks like this (in hex representation): `00000000XXXXXXXX`.
 
+A python implementation is in `desbf.py`.
+I ran it thus: `./desbf.py 48656c6c6f212121 1f6339383e8da6c4 -k "00000000c0??????" -j 4`.
+This produced the result `00000000c0feee22`, or, taking into account parity bits, `00000000c0ffee22`.
+
+## Bonus
+
+> Recover the DES key for the following plaintext-ciphertext pair (both given in hex notation):
+>
+> '''
+> pt = 48656c6c6f212121
+> ct = ddb92846141922b8
+> '''
+>
+> The key starts with zeros, just as the one before (but less).
+> Please turn in your working code together with the correct 64-bit representation of the key and the runtime needed.
+
+The key is `00000ceaf4c0feee` (or, flipping some parity bits to make more sense, `00000deaf4c0ffee`).
+The code used is in `desbf.c`.
+It implements basically the same algorithm as the python version from problem 4, but is much faster.
+Build with `./make.sh`.
+The command I used was `./desbf 48656c6c6f212121 ddb92846141922b8 24`.
+It took just under an hour and a half with 24 threads on `fourbanger.wpi.edu`.
