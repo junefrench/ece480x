@@ -88,13 +88,60 @@ A known-plaintext attack
 
 >> Assume an encryption with a given key. Now assume the key bit at position 1 is being flipped. Which S-boxes in which rounds are affected by the bit flip during DES encryption?
 
-TODO
+The answer depends on the DES key-schedule. First the 64-bit key is mapped to a 56-bit key using the PC-1 table. Bit 1 of the key becomes bit 8 of the left half. In each round, the subkeys are both rotated left by the same amount (depending on which round it is), and then concatenated back together and used to select the round subkey by mapping with the PC-2 table.
+
+In addition to the propogation of the flipped bit through the key schedule, the output of each S-Box affects the input to at least four other S-Boxes in the next round. The 32-bit output of all the S-Boxes is mapped by the P table to a different 32-bit output, which is then expanded to 56 bits by the E-table and used as the input to the S-Boxes in the next round. In this way a single flipped bit can very quickly affect all S-boxes.
+
+I wrote a script which traces the flipped bit, which S-Box it directly affects, and which S-Boxes are 'dirty' (may be affected by the flipped bit depending on the rest of the key and the input) in each round. It can be found in `trackbits.py`.
+
+This process is shown below in the format `R{round number}: <<{shift amount} L[{current index of flipped bit in left half}] K[{index of flipped bit in round subkey}] -> S-Box {S-Box affected by flipped bit in subkey}, Dirty: {all s-boxes affected this round}`.
+
+```
+Round  1: <<  1, L[ 7], K[  20] -> S-Box 4
+    Dirty: S-Box 4
+Round  2: <<  1, L[ 6], K[  10] -> S-Box 2
+    Dirty: S-Box 1, S-Box 2, S-Box 3, S-Box 5, S-Box 6, S-Box 7, S-Box 8
+Round  3: <<  2, L[ 4], K[  16] -> S-Box 3
+    Dirty: S-Box 1, S-Box 2, S-Box 3, S-Box 4, S-Box 5, S-Box 6, S-Box 7, S-Box 8
+Round  4: <<  2, L[ 2], K[  24] -> S-Box 4
+    Dirty: S-Box 1, S-Box 2, S-Box 3, S-Box 4, S-Box 5, S-Box 6, S-Box 7, S-Box 8
+Round  5: <<  2, L[24], K[   4] -> S-Box 1
+    Dirty: S-Box 1, S-Box 2, S-Box 3, S-Box 4, S-Box 5, S-Box 6, S-Box 7, S-Box 8
+Round  6: <<  2, L[22], K[None],
+    Dirty: S-Box 1, S-Box 2, S-Box 3, S-Box 4, S-Box 5, S-Box 6, S-Box 7, S-Box 8
+Round  7: <<  2, L[20], K[  22] -> S-Box 4
+    Dirty: S-Box 1, S-Box 2, S-Box 3, S-Box 4, S-Box 5, S-Box 6, S-Box 7, S-Box 8
+Round  8: <<  2, L[18], K[None]
+    Dirty: S-Box 1, S-Box 2, S-Box 3, S-Box 4, S-Box 5, S-Box 6, S-Box 7, S-Box 8
+Round  9: <<  1, L[17], K[   2] -> S-Box 1
+    Dirty: S-Box 1, S-Box 2, S-Box 3, S-Box 4, S-Box 5, S-Box 6, S-Box 7, S-Box 8
+Round 10: <<  2, L[15], K[   9] -> S-Box 2
+    Dirty: S-Box 1, S-Box 2, S-Box 3, S-Box 4, S-Box 5, S-Box 6, S-Box 7, S-Box 8
+Round 11: <<  2, L[13], K[  23] -> S-Box 4
+    Dirty: S-Box 1, S-Box 2, S-Box 3, S-Box 4, S-Box 5, S-Box 6, S-Box 7, S-Box 8
+Round 12: <<  2, L[11], K[   3] -> S-Box 1
+    Dirty: S-Box 1, S-Box 2, S-Box 3, S-Box 4, S-Box 5, S-Box 6, S-Box 7, S-Box 8
+Round 13: <<  2, L[ 9], K[None]
+    Dirty: S-Box 1, S-Box 2, S-Box 3, S-Box 4, S-Box 5, S-Box 6, S-Box 7, S-Box 8
+Round 14: <<  2, L[ 7], K[  20] -> S-Box 4
+    Dirty: S-Box 1, S-Box 2, S-Box 3, S-Box 4, S-Box 5, S-Box 6, S-Box 7, S-Box 8
+Round 15: <<  2, L[ 5], K[   6] -> S-Box 1
+    Dirty: S-Box 1, S-Box 2, S-Box 3, S-Box 4, S-Box 5, S-Box 6, S-Box 7, S-Box 8
+Round 16: <<  1, L[ 4], K[  16] -> S-Box 3
+    Dirty: S-Box 1, S-Box 2, S-Box 3, S-Box 4, S-Box 5, S-Box 6, S-Box 7, S-Box 8
+```
 
 ### b
 
 >> Which S-boxes in which rounds are affected by this bit flip during DES decryption?
 
+I adapted my script from part a. The adapted version is in `trackbits-dec.py`. The only difference for decryption is that the order of subkeys is reversed. The output for decryption is:
+
 TODO
+
+```
+TODO
+```
 
 ## 3
 
