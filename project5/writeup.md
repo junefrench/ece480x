@@ -35,7 +35,7 @@ The number of generators over the number of elements is 1584/4968 which reduces 
 > a = 984327457683, e = 2153489582, p = 994348472629
 > ```
 
-My program gives 418744 and 331688688384 respectively, the same as the built-in function `pow` in python. The output is:
+My program (see `square_and_multiply.py`) gives 418744 and 331688688384 respectively, the same as the built-in function `pow` in python. The output is:
 
 ```
 (sqm) computing 235973^456789 % 583903

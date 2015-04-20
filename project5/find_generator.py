@@ -35,6 +35,7 @@ def generators(min_a, n):
         if {pow(a, p) % n for p in range(1, len(z) + 1)} == z:
             yield a
 
+
 if __name__ == '__main__':
     print(next(generators(1000, 4969)))
 

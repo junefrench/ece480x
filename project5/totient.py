@@ -32,5 +32,6 @@ def totient(x):
 
     return len([y for y in range(x) if fractions.gcd(x, y) == 1])
 
+
 if __name__ == '__main__':
     print(totient(4968))
