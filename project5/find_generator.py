@@ -26,11 +26,15 @@
 # For more information, please refer to <http://unlicense.org/>
 
 
-def totient(x):
-    """Compute the Euler's totient function of x"""
+def generators(min_a, n):
+    """Find generators in the set Z*[n] (starting from the first generator greater than min_a)"""
     import fractions
 
-    return len([y for y in range(x) if fractions.gcd(x, y) == 1])
+    z = {x for x in range(n) if fractions.gcd(x, n) == 1}
+    for a in range(min_a, n):
+        if {pow(a, p) % n for p in range(1, len(z) + 1)} == z:
+            yield a
 
 if __name__ == '__main__':
-    print(totient(4968))
+    print(next(generators(1000, 4969)))
+
