@@ -148,5 +148,6 @@ if __name__ == '__main__':
 
     # Check that Alice and Bob have the same key.
     assert alice._session_key == bob._session_key
-    print("Alice and Bob now share the same secret")
+    from binascii import hexlify
+    print("Alice and Bob both hash their shared secret to get the session key 0x{0}".format(hexlify(alice._session_key).decode('utf-8')))
 
