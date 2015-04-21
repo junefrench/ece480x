@@ -132,3 +132,25 @@ Was there a question in there somewhere?
 > Since the Decisional Diffie-Hellman problem is easy to solve for the given group, please apply SHA-256 to the computed `k[a] = k[b]` to get a symmetric-sized key from the scheme. Hash functions are a convenient way of turning a random group element into a random bit sequence. Please use big endian conversion to represent your integer as SHA-256 input.
 
 Ok. My code is in `diffie_hellman.py`.
+
+## 4
+
+> The ElGamal encryption scheme is non-deterministic: A given message `m` has many valid encryptions.
+
+### a
+
+> Why is the ElGamal encryption scheme non-deterministic?
+
+Because an ephemeral key is generated for each encryption by randomly selecting an index, which is used as an exponent to select a random element from the multiplicative group. This is done because the shared secret can be determined from a known plaintext, so a different shared secret must be used each time to counter known-plaintext attacks.
+
+### b
+
+> How many valid cyphertexts exist for each message `m` (general expression)? How many are there for the system in problem 8.13 from the book (numerical answer)?
+
+In general, there are `p - 1` possible valid cyphertexts for a message `m`. In problem 8.13 in the book we are given `p = 467` so there are 466 possible cyphertexts for a given message.
+
+### c
+
+> Consider the case that for two messages `m[1] != m[2]` the same session parameter `y1 = y2` has been chosen for the ElGamal encryption. This kind of behavior occurs if no or a bad cryptographic PRNG is being used. Show how the message `m[2]` can be recovered from a known message-cyphertext pair `m[1], c[1]` if the same `y` is used.
+
+If we know `m[1]` and `c[1]`, then we can compute `h^y` because `c[1] = m[1] * h^y (mod p)` (where `h` is the public key), so we can get `h^y` by computing `c[1] * mmi(m[1]) (mod p)` (where `mmi(x)` is the modular multiplicative inverse of `x`). Because the public key does not change and we know that `y` was chosen the same for each message, we can use our value of `h^y` to decrypt any message.
