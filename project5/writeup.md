@@ -119,7 +119,7 @@ It does not have to be random. The prime `p` in DHKE is considered public. As lo
 
 > In order to increase the security of the scheme we use a safe prime. A safe prime ps is of the form `p[s] = 2*p + 1`, where `p` is also prime. The group we will use for DHKE in this problem will be multiplicative group `Z∗[p[s]]`. One way of choosing the DHKE parameter g is choosing it as a random element from `Z∗[p[s]]`. Explain why using a safe prime helps ensure that finding an element `g` of high order `q` is easy. Make your DHKE program choose `g` at random from `Z∗[p[s]]`. The safe prime used should also have 1024 bits.
 
-Choosing a safe prime `p[s] = 2p + 1` (where `p` is prime) makes it easier to find an element `g` in `G = Z*[p[s]]` with a high order because the order of `G` will be `p[s] - 1 = 2p`. Thus the order of any element of `G` must be either 2 or `p`, so we just need to pick an element which generates a subgroup of order `p`.
+Choosing a safe prime `p[s] = 2p + 1` (where `p` is prime) makes it easier to find an element `g` in `G = Z*[p[s]]` with a high order because it ensures that every element in the range `2..p-2` will have an order of either `p` or `p/2`.
 
 ### d
 
