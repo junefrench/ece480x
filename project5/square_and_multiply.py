@@ -49,8 +49,6 @@ if __name__ == '__main__':
         ('pow', pow),
     ]
 
-    import itertools
-
     results = {args: [] for args in arg_sets}
     for func_name, func in funcs:
         for args in arg_sets:
