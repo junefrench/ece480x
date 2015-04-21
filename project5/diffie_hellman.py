@@ -73,8 +73,8 @@ class DiffieHellmanParticipant():
         if p.bit_length() < min_bits_p:
             raise ValueError("p is too small")
 
-        # ensure that g is in the multiplicative group of integers mod p
-        if g not in range(p):
+        # ensure that g is in the multiplicative group of integers mod p ([2, 3, 4, ... p-2])
+        if g not in range(2, p-1):
             raise ValueError("g is not in the multiplicative group of integers mod p")
 
         # generate a or check its size
