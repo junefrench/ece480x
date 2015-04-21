@@ -7,25 +7,25 @@ John French
 > 8.4
 >> In this exercise we want to identify primitive elements (generators) of a multiplicative group since they play a big role in the DHKE and and many other publickey schemes based on the DL problem. You are given a prime `p = 4969` and the corresponding multiplicative group `Z∗[4969]`.
 
-## a
+### a
 
 >> Determine how many generators exist in `Z*[4969]`.
 
 `Z*[4969]` is a finite cyclic group because 4969 is prime (theorem 8.2.2). The number of generators (primitive elements) in this group is `totient(|Z*[4969]|)` (theorem 8.2.4). `|Z*[4969]|` is 4968, because since 4969 is prime, all integers `0..4969-1` are coprime with 4969 and therefore in the group, except for 0. `totient(4968)` is 1584 (computed with `totient.py`). So, there are 1584 generators.
 
-## b
+### b
 
 >> What is the probability of a randomly chosen element in `Z∗[4969]` being a generator?
 
 The number of generators over the number of elements is 1584/4968 which reduces to 22/69.
 
-## c
+### c
 
 >> Determine the smallest generator `a` in `Z*[4969]` with `a > 1000`.
 
 1005 (using `find_generator.py`).
 
-# 2
+## 2
 
 > Implement the square and multiply algorithm using a computer language of your choice. The program should print all intermediate results.
 >
@@ -99,4 +99,36 @@ My program (see `square_and_multiply.py`) gives 418744 and 331688688384 respecti
 (pow) 984327457683^2153489582 % 994348472629 = 331688688384
 ```
 
+## 3
 
+> The goal of this problem is to implement the Diffie Hellman Key Exchange.
+
+### a
+
+> Choose a pseudo random generator and initialize it with a `seed = 12345`. You can use a PRNG of your choice. Please comment on the security of your scheme given that you will use the same PRNG to generate both of the secret DHKE parameters `a` and `b`.
+
+The security of the scheme will be extremely poor as the PRNG will use a fixed, random seed and therefore its behavior will be entirely deterministic.
+
+### b
+
+> Next, we have to generate a large prime. Please use a tool of your choice to generate a prime `p` of exactly 1024 bits. Does this prime have to be random? Justify your answer.
+
+It does not have to be random. The prime `p` in DHKE is considered public. As long as the private parameters `a` and `b` are selected randomly and kept secret, the prime `p` may be fixed and publicly known without compromising the security of the system.
+
+### c
+
+> In order to increase the security of the scheme we use a safe prime. A safe prime ps is of the form `p[s] = 2*p + 1`, where `p` is also prime. The group we will use for DHKE in this problem will be multiplicative group `Z∗[p[s]]`. One way of choosing the DHKE parameter g is choosing it as a random element from `Z∗[p[s]]`. Explain why using a safe prime helps ensure that finding an element `g` of high order `q` is easy. Make your DHKE program choose `g` at random from `Z∗[p[s]]`. The safe prime used should also have 1024 bits.
+
+Choosing a safe prime `p[s] = 2p + 1` (where `p` is prime) makes it easier to find an element `g` in `G = Z*[p[s]]` with a high order because the order of `G` will be `p[s] - 1 = 2p`. Thus the order of any element of `G` must be either 2 or `p`, so we just need to pick an element which generates a subgroup of order `p`.
+
+### d
+
+>  Next, generate two random parameters `a` and `b`. Write your code so that `a` and `b` can only take valid parameters.
+
+Was there a question in there somewhere?
+
+### e
+
+> Since the Decisional Diffie-Hellman problem is easy to solve for the given group, please apply SHA-256 to the computed `k[a] = k[b]` to get a symmetric-sized key from the scheme. Hash functions are a convenient way of turning a random group element into a random bit sequence. Please use big endian conversion to represent your integer as SHA-256 input.
+
+Ok. My code is in `diffie_hellman.py`.
