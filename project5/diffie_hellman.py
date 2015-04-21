@@ -125,19 +125,28 @@ if __name__ == '__main__':
         "9fd8a4634bbef61c3305d883701ee02eed5cdb",
         16
     )
+    print("Alice and Bob agree on prime {0}".format(hex(p)))
 
     # Select g randomly from [2, 3, 4, ... p-2].
     g = random.randint(2, p - 2)
+    print("Alice and Bob agree on base {0}".format(hex(g)))
 
     # Construct the participants from the public p and g.
     # They will internally select secret exponents.
     alice = DiffieHellmanParticipant(p, g, min_bits_p=1024)
+    print("Alice selects private key {0}".format(hex(alice._a)))
+    print("Alice computes her public key {0}".format(hex(alice.A)))
     bob = DiffieHellmanParticipant(p, g, min_bits_p=1024)
+    print("Bob selects private key {0}".format(hex(bob._a)))
+    print("Bob computes his public key {0}".format(hex(bob.A)))
 
     # Exchange public keys.
     alice.receive_pubkey(bob.get_pubkey())
+    print("Alice receives Bob's public key and computes the shared secret 0x{0}".format(hex(alice._s)))
     bob.receive_pubkey(alice.get_pubkey())
+    print("Bob receives Alice's public key and computes the shared secret 0x{0}".format(hex(bob._s)))
 
     # Check that Alice and Bob have the same key.
     assert alice._session_key == bob._session_key
+    print("Alice and Bob now share the same secret")
 
