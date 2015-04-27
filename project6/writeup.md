@@ -51,3 +51,9 @@ q = \
   760142688500373499397189199713203432203870807995122123345994955408518422\
   63410783559
 ```
+
+## 3
+
+> Implement padded RSA, as introduced in class. Assume that the message m is always a 256 bit key, i.e. `|m| = 256` and that `|N| = 1024`.
+
+My code is in `rsa.py`.
