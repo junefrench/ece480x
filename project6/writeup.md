@@ -5,8 +5,49 @@ John French
 ## 1
 
 > 7.12
+>
+>> We now show how an attack with chosen ciphertext can be used to break an RSA encryption.
 
-TODO
+### a
+
+>> Show that the multiplicative property holds for RSA, i.e., show that the product
+of two ciphertexts is equal to the encryption of the product of the two respective
+plaintexts.
+
+Consider a pair of plaintexts `m1` and `m2` and their cyphertexts:
+
+```
+c1, c2 = m1^e % n, m2^e % n
+```
+
+The encryption of the product of the plaintexts is then:
+
+```
+cp = (m1 * m2)^e % n
+```
+
+The product of the two cyphertexts is:
+
+```
+c1 * c2 % n = (m1^e % n)(m2^e % n) % n
+```
+
+The multiplicative property holds, then, if `cp = c1 * c2`. This is the case:
+
+```
+                    c1 * c2 = cp
+=> (m1^e % n)(m2^e % n) % n = (m1 * m2)^e % n
+=>          m1^e * m2^e % n = (m1 * m2)^e % n  # if A % k = a and B % k = b, then AB % k = ab % k.
+=>          (m1 * m2)^e % n = (m1 * m2)^e % n  # (xy)^n = x^n * y^n
+```
+
+So the multiplicitive property does hold.
+
+### b
+
+>> This property can under certain circumstances lead to an attack. Assume that Bob first receives an encrypted message `y1` from Alice which Oscar obtains by eavesdropping. At a later point in time, we assume that Oscar can send an innocent looking ciphertext `y2` to Bob, and that Oscar can obtain the decryption of `y2`. In practice this could, for instance, happen if Oscar manages to hack into Bob's system such that he can get access to decrypted plaintext for a limited period of time.
+
+Oscar can ask Bob to decrypt the cyphertext `y1 * y3 % n`, where y3 is  the encryption of a message `m` which Oscar may choose at random (and encrypt with Bob's public key). Oscar receives the decryption of this cyphertext, and then multiplies it by the modular multiplicative inverse of his random plaintext `m` to recover the plaintext of `y1`.
 
 ## 2
 
