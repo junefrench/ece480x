@@ -96,7 +96,7 @@ My code is in `rsa.py`.
 
 ## 4
 
-> In this question you will become familiar with real world usage of public key en- cryption. The goal is to send a correctly encrypted email to ece480x@wpi.edu, containing your name and explain why you might need to use this method to send an email to someone. Your email should be encrypted using the public key available in mywpi.
+> In this question you will become familiar with real world usage of public key encryption. The goal is to send a correctly encrypted email to ece480x@wpi.edu, containing your name and explain why you might need to use this method to send an email to someone.
 
 I sent the message:
 
